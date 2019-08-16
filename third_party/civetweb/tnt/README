@@ -1,0 +1,4 @@
+This is how third_party/civetweb was created:
+
+1. Downloaded from https://github.com/civetweb/civetweb/tree/3fadd57
+2. `rm -rf Qt VisualStudio ci conan zephyr ci distribution contrib .git`
