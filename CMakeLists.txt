@@ -248,7 +248,10 @@ endif()
 if (CMAKE_BUILD_TYPE STREQUAL "Debug" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
     set(TNT_DEV true)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DTNT_DEV")
+    add_definitions(-DENABLE_MATERIAL_DEBUGGER)
 endif()
+
+add_definitions(-DENABLE_MATERIAL_DEBUGGER) # TODO: remove
 
 # By default, build with Vulkan support on desktop platforms, although clients must request to use
 # it at run time. On Android, the build does not include Vulkan support unless CMake is invoked
@@ -432,6 +435,7 @@ if (FILAMENT_BUILD_FILAMAT)
     add_subdirectory(${EXTERNAL}/glslang/tnt)
     add_subdirectory(${EXTERNAL}/spirv-cross/tnt)
     add_subdirectory(${LIBRARIES}/filamat)
+    add_subdirectory(${LIBRARIES}/matdbg)
 endif()
 
 if (FILAMENT_SUPPORTS_VULKAN)

@@ -260,6 +260,13 @@ target_link_libraries(${TARGET} PUBLIC filabridge)
 target_link_libraries(${TARGET} PUBLIC image_headers)
 target_link_libraries(${TARGET} PUBLIC ibl)
 
+# We have a dependency to the MaterialDebugger library even in release configuration, but it has an
+# empty implementation. This allows us to contain most of the ENABLE_MATERIAL_DEBUGGER checks to the
+# library itself.
+#
+# TODO: make sure this adds almost ZERO bytes to the release version. (including resgen stuff)
+target_link_libraries(${TARGET} PUBLIC matdbg)
+
 # Android, iOS, and WebGL do not use bluegl.
 if(NOT IOS AND NOT ANDROID AND NOT WEBGL)
     target_link_libraries(${TARGET} PRIVATE bluegl)

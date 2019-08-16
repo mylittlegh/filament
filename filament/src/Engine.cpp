@@ -45,6 +45,10 @@
 
 #include <filaflat/ShaderBuilder.h>
 
+#if ENABLE_MATERIAL_DEBUGGER
+#include <matdbg/MaterialDebugger.h>
+#endif
+
 #include <utils/compiler.h>
 #include <utils/CString.h>
 #include <utils/Log.h>
@@ -159,6 +163,10 @@ void FEngine::init() {
     // this must be first.
     mCommandStream = CommandStream(*mDriver, mCommandBufferQueue.getCircularBuffer());
     DriverApi& driverApi = getDriverApi();
+
+#if ENABLE_MATERIAL_DEBUGGER
+    debug.material_debugger = new matdbg::MaterialDebugger(matdbg::ENGINE);
+#endif
 
     mResourceAllocator = new fg::ResourceAllocator(driverApi);
 

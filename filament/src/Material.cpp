@@ -23,6 +23,8 @@
 
 #include "FilamentAPI-impl.h"
 
+#include <matdbg/MaterialDebugger.h>
+
 #include <backend/DriverEnums.h>
 
 #include <private/filament/SibGenerator.h>
@@ -73,8 +75,19 @@ Material::Builder& Material::Builder::package(const void* payload, size_t size) 
 }
 
 Material* Material::Builder::build(Engine& engine) {
+
+    FEngine& fengine = upcast(engine);
+    const void* packageData = mImpl->mPayload;
+    size_t packageSize = mImpl->mSize;
+
+    matdbg::MaterialDebugger* debugger = fengine.debug.material_debugger;
+    if (debugger) {
+        matdbg::MaterialId id = debugger->addMaterialPackage(packageData, packageSize);
+        debugger->getEditedMaterialPackage(id, &packageData, &packageSize);
+    }
+
     MaterialParser* materialParser = new MaterialParser(
-            upcast(engine).getBackend(), mImpl->mPayload, mImpl->mSize);
+            fengine.getBackend(), packageData, packageSize);
     bool materialOK = materialParser->parse() && materialParser->isShadingMaterial();
     if (!ASSERT_POSTCONDITION_NON_FATAL(materialOK, "could not parse the material package")) {
         return nullptr;
@@ -85,7 +98,7 @@ Material* Material::Builder::build(Engine& engine) {
     ASSERT_PRECONDITION(version == MATERIAL_VERSION, "Material version mismatch. Expected %d but "
             "received %d.", MATERIAL_VERSION, version);
 
-    assert(upcast(engine).getBackend() != Backend::DEFAULT &&
+    assert(fengine.getBackend() != Backend::DEFAULT &&
             "Default backend has not been resolved.");
 
     uint32_t v;
@@ -93,7 +106,7 @@ Material* Material::Builder::build(Engine& engine) {
     utils::bitset32 shaderModels;
     shaderModels.setValue(v);
 
-    backend::ShaderModel shaderModel = upcast(engine).getDriver().getShaderModel();
+    backend::ShaderModel shaderModel = fengine.getDriver().getShaderModel();
     if (!shaderModels.test(static_cast<uint32_t>(shaderModel))) {
         CString name;
         materialParser->getName(&name);
@@ -110,7 +123,7 @@ Material* Material::Builder::build(Engine& engine) {
 
     mImpl->mMaterialParser = materialParser;
 
-    return upcast(engine).createMaterial(*this);
+    return fengine.createMaterial(*this);
 }
 
 namespace details {

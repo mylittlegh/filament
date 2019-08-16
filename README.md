@@ -142,6 +142,7 @@ and tools.
   - `ibl`:                 IBL generation tools
   - `image`:               Image filtering and simple transforms
   - `imageio`:             Image file reading / writing, only intended for internal use
+  - `matdbg`:              Web-based materials debugging library
   - `math`:                Math library
   - `rays`:                Simple path tracer used for baking ambient occlusion, etc.
   - `utils`:               Utility library (threads, memory, data structures, etc.)

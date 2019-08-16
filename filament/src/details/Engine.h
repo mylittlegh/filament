@@ -74,6 +74,9 @@ namespace fg {
 class ResourceAllocator;
 } // namespace fg
 
+namespace matdbg {
+class MaterialDebugger;
+} // namespace matdbg
 
 namespace details {
 
@@ -377,6 +380,7 @@ public:
         struct {
             bool camera_at_origin = true;
         } view;
+        matdbg::MaterialDebugger* material_debugger;
     } debug;
 };
 
